@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as C from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import {
@@ -10,34 +9,26 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { initialValues, Schema } from "./schema";
+
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [emailConf, setEmailConf] = useState("");
-  const [senha, setSenha] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const [error, setError] = useState("");
   const { signup } = useAuth();
 
-  const handleSignup = () => {
-    if (!email | !emailConf | !senha) {
-      setError("Preencha todos os campos");
-      return;
-    } else if (email !== emailConf) {
-      setError("Os e-mails não são iguais");
-      return;
-    }
+  const { register, handleSubmit, formState: { errors, isSubmitting, touchedFields }, watch } = useForm({
+    mode: 'onTouched',
+    reValidateMode: 'onSubmit',
+    resolver: yupResolver(Schema),
+    defaultValues: initialValues,
 
-    const res = signup(email, senha);
+  });
 
-    if (res) {
-      setError(res);
-      return;
-    }
-
-    alert("Usuário cadatrado com sucesso!");
-    navigate("/");
+  const onSubmit = (value) => {
+    const res = signup(value);   
   };
 
   return (
@@ -49,8 +40,8 @@ const Signup = () => {
         minHeight: '100%'
       }}>
       <Container maxWidth="sm">
-        <form>
-          <Box sx={{ my: 3, pt: 15 }}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: 'column', gap: '30px' }}>
+          <Box sx={{ my: 3, pt: 8, textAlign: 'center' }}>
             <Typography
               color="textPrimary"
               variant="h4"
@@ -59,27 +50,26 @@ const Signup = () => {
             </Typography>
           </Box>
           <TextField
-            type="email"
-            value={email}
-            onChange={(e) => [setEmail(e.target.value), setError("")]}
-          >
-            Digite seu E-mail
-          </TextField>
+            label="Nome"
+            type="text"
+            error={errors.name}
+            helperText={errors.name && errors.name.message}
+            {...register('name')}
+          />
           <TextField
-            type="email"
-            value={emailConf}
-            onChange={(e) => [setEmailConf(e.target.value), setError("")]}
-          >
-            Confirme seu E-mail
-          </TextField>
+            type="text"
+            label="Senha"
+            error={errors.password}
+            helperText={errors.password && errors.password.message}
+            {...register('password')}
+          />
           <TextField
             type="password"
-            value={senha}
-            onChange={(e) => [setSenha(e.target.value), setError("")]}
-          >
-            Digite sua Senha
-          </TextField>
-          <C.labelError>{error}</C.labelError>
+            label="Confirmar Senha"
+            error={errors.confirmPassword}
+            helperText={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
+          />
           <Box sx={{ my: 2 }}>
             <Typography color="textSecondary" variant="body1">
               Já tem uma conta? <Link to="/">&nbsp;Entre</Link>
@@ -91,7 +81,8 @@ const Signup = () => {
             size="large"
             type="submit"
             variant="contained"
-            onClick={handleSignup}
+            disabled={isSubmitting}
+
           >
             Inscrever-se
           </Button>
