@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function getAPIClient(ctx) {
+export function getAPIClient() {
   const token = localStorage.getItem("token");
 
   const api = axios.create({

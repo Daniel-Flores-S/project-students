@@ -2,31 +2,27 @@
 
 import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { initialValues, Schema } from './schema';
+import { yupResolver } from "@hookform/resolvers/yup";
+
 
 const Login = () => {
   const { signin } = useAuth();
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    if (!email | !senha) {
-      setError("Preencha todos os campos");
-      return;
-    }
+  const { register, handleSubmit, formState: { errors, isSubmitting, touchedFields }, watch }  = useForm({
+    resolver: yupResolver(Schema),
+    defaultValues: initialValues,
+  });
 
-    const res = signin(email, senha);
-
-    if (res) {
-      setError(res);
-      return;
-    }
-
-    navigate("/home");
+  const handleLogin = (value) => {
+    console.log("navigate? ",value)
+    signin(value)
+    //navigate("/home");
   };
 
 
@@ -42,7 +38,7 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
-          <form >
+          <form onSubmit={handleSubmit(handleLogin)}>
             <Box sx={{ my: 3, pt: 15 }}>
               <Typography
                 color="textPrimary"
@@ -62,21 +58,21 @@ const Login = () => {
               fullWidth
               label="Nome de usuário"
               margin="normal"
-              name="email"
+              error={errors.name}
+              helperText={errors.name?.message}
+              {...register('name')}
               type="text"
               variant="outlined"
-              value={email}
-              onChange={(e) => [setEmail(e.target.value), setError("")]}
             />
             <TextField
               fullWidth
               label="Senha"
               margin="normal"
-              name="password"
+              {...register('password')}
+              error={errors.password}
+              helperText={errors.password?.message}
               type="password"
               variant="outlined"
-              value={senha}
-              onChange={(e) => [setSenha(e.target.value), setError("")]}
             />
             <Box sx={{ py: 2 }}>
               <Button
@@ -85,7 +81,6 @@ const Login = () => {
                 size="large"
                 type="submit"
                 variant="contained"
-                onClick={handleLogin}
               >
                 Sign In Now
               </Button>

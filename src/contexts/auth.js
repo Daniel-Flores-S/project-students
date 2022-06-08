@@ -1,10 +1,12 @@
+import React from "react";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
+  let navigate = useNavigate();
 
   useEffect(() => {
     const userToken = localStorage.getItem("user_token");
@@ -19,31 +21,32 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const signin = (email, password) => {
-    const usersStorage = JSON.parse(localStorage.getItem("users_bd"));
-
-    const hasUser = usersStorage?.filter((user) => user.email === email);
-
-    if (hasUser?.length) {
-      if (hasUser[0].email === email && hasUser[0].password === password) {
-        const token = Math.random().toString(36).substring(2);
-        localStorage.setItem("user_token", JSON.stringify({ email, token }));
-        setUser({ email, password });
-        return;
-      } else {
-        return "E-mail ou senha incorretos";
+  const signin = async (body) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_URL}/auth/login`,
+        body
+      );
+      console.log(data);
+      if (data) {
+        localStorage.setItem("user_token", JSON.stringify(data));
+        navigate("/home");
       }
-    } else {
-      return "Usuário não cadastrado";
+      console.log(data);
+    } catch (error) {
+      return error;
     }
   };
 
   const signup = async (body) => {
     try {
-      const res = await axios.post("http://localhost:3333/student/auth/register", body)
-      console.log(res)
+      const res = await axios.post(
+        `${process.env.REACT_APP_URL}/auth/register`,
+        body
+      );
+      console.log(res?.data);
     } catch (error) {
-      return error.response.data.message;
+      return error;
     }
   };
 
