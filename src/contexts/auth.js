@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext({});
 
@@ -13,7 +13,8 @@ export const AuthProvider = ({ children }) => {
         body
       );
       if (data) {
-        localStorage.setItem("user_token", JSON.stringify(data));
+        console.log(data);
+        localStorage.setItem("user_token", JSON.stringify(data?.token));
         navigate("/home");
       }
     } catch (error) {

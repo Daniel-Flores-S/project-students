@@ -1,6 +1,5 @@
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -8,18 +7,15 @@ import FormControl from "@mui/material/FormControl";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { OutlinedInput, TextField } from "@mui/material";
+import { OutlinedInput } from "@mui/material";
 
 export default function Password(props) {
   const {
     fullWidth,
     label,
-    margin,
     register,
     error,
     helperText,
-    type,
-    varian,
   } = props;
 
   const [showPassword, setShowPassword] = React.useState(false);

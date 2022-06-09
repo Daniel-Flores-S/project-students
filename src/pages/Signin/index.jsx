@@ -1,6 +1,6 @@
 
 
-import { Backdrop, Box, Button, CircularProgress, Container, FormHelperText, Grid, TextField, Typography } from '@mui/material';
+import { Backdrop, Box, Button, CircularProgress, Container, FormHelperText, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,10 +13,9 @@ import { Required } from '../../components/Required';
 
 const Login = () => {
   const { signin } = useAuth();
-  const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, touchedFields }, watch } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(Schema),
     defaultValues: initialValues,
   });

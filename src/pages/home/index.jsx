@@ -1,41 +1,40 @@
-import { Button } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import { Button, Grid, It, TextField } from "@mui/material";
+import { Box, Container } from "@mui/system";
+import * as React from 'react';
+import { Seach } from "../../components/Seach";
+import Sidebar from "../../components/Sidebar";
+import { TableCustom } from "../../components/Table";
+import { DataTable } from "../../mock/data";
 
 const Home = () => {
-    const { signout } = useAuth();
-    const navigate = useNavigate();
-
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexGrow: 1,
-                backgroundColor: '#fafafa',
-                width: '100%',
-                height: '100vh',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-
-            <div>
-                <h3>Home</h3>
-                <Button
-                    color="success"                    
-                    size="large"
-                    type="submit"
-                    variant="contained"                    
-                    onClick={() => [signout(), navigate("/")]}
+        <Grid container spacing={1}>
+            <Grid item xs={12}>
+                <Sidebar />
+            </Grid>
+            <Container maxWidth="xl">
+                <Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        //py: 8
+                        mt: 2
+                    }}
                 >
-                    Sair
-                </Button>
-            </div>
-        </div>
+                    <Container maxWidth={false}>
+                        <Seach />
+                    </Container>
+                    <Box sx={{ mt: 1, pl: '24px', pr: '24px' }}>
+                        <TableCustom customers={DataTable} />
+                    </Box>
+                </Box>
+            </Container>
+        </Grid>
     );
 }
 
 export default Home;
+
+
 
 
