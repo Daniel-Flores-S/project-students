@@ -12,7 +12,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 
 export const Seach = (props) => (
-  <Box >
+  <Box>
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
@@ -47,13 +47,20 @@ export const Seach = (props) => (
               </Button>
             </Grid>
             <Grid item md={2} xs={12} alignItems={"end"}>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                color="primary"
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
               >
-                New Student
-              </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  color="primary"
+                >
+                  New Student
+                </Button>
+              </div>
             </Grid>
           </Grid>
         </CardContent>

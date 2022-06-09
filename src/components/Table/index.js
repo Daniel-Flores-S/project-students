@@ -15,14 +15,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { getInitials } from "./utils";
 
-export const getInitials = (name = "") =>
-  name
-    .replace(/\s+/, " ")
-    .split(" ")
-    .slice(0, 2)
-    .map((v) => v && v[0].toUpperCase())
-    .join("");
+
 
 export const TableCustom = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
@@ -95,10 +90,10 @@ export const TableCustom = ({ customers, ...rest }) => {
                   />
                 </TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Registration date</TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell>Course</TableCell>
+                <TableCell>School</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -138,6 +133,7 @@ export const TableCustom = ({ customers, ...rest }) => {
                   <TableCell>
                     {format(customer.createdAt, "dd/MM/yyyy")}
                   </TableCell>
+                  
                 </TableRow>
               ))}
             </TableBody>

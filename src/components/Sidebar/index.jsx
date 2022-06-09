@@ -1,4 +1,4 @@
-import { AppBar, Button, Container, Typography } from "@mui/material";
+import { AppBar, Container, Typography } from "@mui/material";
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -21,7 +21,6 @@ const Sidebar = () => {
     const { signout } = useAuth();
     const navigate = useNavigate();
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const settings = [
@@ -34,23 +33,17 @@ const Sidebar = () => {
         {
             label: 'Sair',
             action: () => {
-                //[signout(), navigate("/")]
                 signout();
                 navigate("/");
             }
         }
     ]
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+    
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
@@ -85,7 +78,6 @@ const Sidebar = () => {
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
                             color="inherit"
                         >
                             <MenuIcon />
