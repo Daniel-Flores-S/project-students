@@ -1,12 +1,14 @@
 
 
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Backdrop, Box, Button, CircularProgress, Container, FormHelperText, Grid, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { initialValues, Schema } from './schema';
 import { yupResolver } from "@hookform/resolvers/yup";
+import Password from '../../components/Password';
+import { Required } from '../../components/Required';
 
 
 const Login = () => {
@@ -14,49 +16,66 @@ const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, touchedFields }, watch }  = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting, touchedFields }, watch } = useForm({
     resolver: yupResolver(Schema),
     defaultValues: initialValues,
   });
 
-  const handleLogin = (value) => {
-    console.log("navigate? ",value)
-    signin(value)
-    //navigate("/home");
+  const onSubmit = async (value) => {
+    const { response } = await signin(value)
+    if (response?.data) {
+      setError(response?.data?.msg);
+    }
   };
 
 
   return (
     <>
+      <Backdrop
+        sx={{ color: '#1100ff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isSubmitting}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box
         component="main"
         sx={{
           alignItems: 'center',
           display: 'flex',
           flexGrow: 1,
-          minHeight: '100%'
+          minHeight: '100%',
         }}
       >
         <Container maxWidth="sm">
-          <form onSubmit={handleSubmit(handleLogin)}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: "flex",
+              flexDirection: 'column',
+              gap: '20px'
+            }}
+          >
             <Box sx={{ my: 3, pt: 15 }}>
               <Typography
                 color="textPrimary"
                 variant="h4"
+                align="center"
               >
-                Sign in
+                Entrar
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
+                align="center"
               >
-                Sign in on the internal platform
+                Faça login na plataforma interna
               </Typography>
             </Box>
             <TextField
               fullWidth
-              label="Nome de usuário"
+              label={<Required text={'Nome de usuário'} />}
               margin="normal"
               error={errors.name}
               helperText={errors.name?.message}
@@ -64,11 +83,14 @@ const Login = () => {
               type="text"
               variant="outlined"
             />
-            <TextField
+            {Boolean(error) && (
+              <FormHelperText error>{error}</FormHelperText>
+            )}
+            <Password
               fullWidth
-              label="Senha"
+              label={<Required text={'Senha'} />}
               margin="normal"
-              {...register('password')}
+              register={register('password')}
               error={errors.password}
               helperText={errors.password?.message}
               type="password"
@@ -81,19 +103,20 @@ const Login = () => {
                 size="large"
                 type="submit"
                 variant="contained"
+                disabled={isSubmitting}
               >
-                Sign In Now
+                Entrar
               </Button>
             </Box>
-          </form>
+          </Box>
           <Box sx={{ my: 2 }}>
             <Typography
               color="textSecondary"
               variant="body1"
             >
-              Don't have an account? {' '}
+              Não tem uma conta? {' '}
               <Link to="/signup">
-                Sign Up
+                Inscrever-se
               </Link>
             </Typography>
           </Box>

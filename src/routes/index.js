@@ -8,7 +8,6 @@ import Signup from "../pages/Signup";
 
 const Private = ({ Item }) => {
   const token = localStorage.getItem("user_token");
-
   return token ? <Item /> : <Signin />;
 };
 
