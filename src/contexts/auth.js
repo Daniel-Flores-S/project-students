@@ -6,6 +6,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   let navigate = useNavigate();
+  const [student, setStudent] = React.useState(null);
   const signin = async (body) => {
     try {
       const { data } = await axios.post(
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (data) {
         console.log(data);
-        localStorage.setItem("user_token", JSON.stringify(data?.token));
+        localStorage.setItem("user_token", data?.token);
         navigate("/home");
       }
     } catch (error) {
@@ -41,7 +42,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signin, signup, signout }}>
+    <AuthContext.Provider
+      value={{ signin, signup, signout, student, setStudent }}
+    >
       {children}
     </AuthContext.Provider>
   );

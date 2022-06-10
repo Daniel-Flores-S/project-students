@@ -3,7 +3,6 @@ import { Box, Container } from "@mui/system";
 import * as React from 'react';
 import { Seach } from "../../components/Seach";
 import { TableCustom } from "../../components/Table";
-import { DataTable } from "../../mock/data";
 
 const Home = () => {
     return (
@@ -21,7 +20,7 @@ const Home = () => {
                         <Seach />
                     </Container>
                     <Box sx={{ mt: 1, pl: '24px', pr: '24px' }}>
-                        <TableCustom customers={DataTable} />
+                        <TableCustom />
                     </Box>
                 </Box>
             </Container>

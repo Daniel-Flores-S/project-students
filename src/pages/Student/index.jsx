@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Backdrop,
   Box,
@@ -8,40 +8,63 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { initialValues, Schema } from "./schema";
-import { Required } from "../../components/Required";
-import { registerStudent } from "../../store/api/student";
-
+import { getStudentById, updatedStudentById } from "../../store/user";
+import { Course, School } from "./utils.js";
+import { registerStudent } from "../../store/user";
 
 const Signup = () => {
   const navigate = useNavigate();
-  //const [error, setError] = useState("");
+  let { id } = useParams();
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
-    mode: 'onTouched',
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, } = useForm({
+    mode: 'all',
+    shouldUnregister: false,
     reValidateMode: 'onSubmit',
     resolver: yupResolver(Schema),
     defaultValues: initialValues,
 
   });
+  useEffect(() => {
+    (async () => {
+      const studentNew = await getStudentById(id);
+      if (studentNew?.statusText === "OK") {
+        const { data } = studentNew;
+        setValue("name", data?.name);
+        setValue("age", data?.age);
+        setValue("course", data?.course);
+        setValue("school", data?.school);
+      }
+    })();
+  }, [id]);
 
-  const onSubmit = async (value) => {
-    const body = {
-      name: value?.name,
-      age: parseInt(value?.age),
-      course: value?.course,
-      school: value?.school
-    }
+  const onSubmit = (body) => {
+    { id ? updateStudent(id, body) : createStudent(body) }
+  };
+
+  const createStudent = async (body) => {
     const response = await registerStudent(body);
-    console.log(response.statusText);
+    console.log(response);
     if (response.statusText === "Created") {
       navigate("/home");
     }
+  }
 
-  };
+  const updateStudent = async (body) => {
+    const response = await updatedStudentById(id, body);
+    console.log(response);
+    if (response.statusText === "OK") {
+      navigate("/home");
+    }
+  }
 
   return (
     <>
@@ -73,7 +96,7 @@ const Signup = () => {
                 variant="h4"
                 align="center"
               >
-                Cadastro
+                {id ? `Editar` : "Cadastrar "}
               </Typography>
             </Box>
             <Box
@@ -91,8 +114,7 @@ const Signup = () => {
               >
                 <TextField
                   fullWidth
-                  // Nome + <Required />
-                  label={<Required text={'Nome'} />}
+                  placeholder="Nome"
                   type="text"
                   error={errors.name}
                   helperText={errors.name && errors.name.message}
@@ -103,7 +125,7 @@ const Signup = () => {
                 )} */}
               </Box>
               <TextField
-                label={<Required text={'Age'} />}
+                placeholder={'Age'}
                 type="number"
                 error={errors.age}
                 helperText={errors.age && errors.age.message}
@@ -111,20 +133,51 @@ const Signup = () => {
               />
 
             </Box>
-            <TextField
-              type="text"
-              label={<Required text={'Course'} />}
-              error={errors.course}
-              helperText={errors.course && errors.course.message}
-              {...register('course')}
-            />
-            <TextField
-              type="text"
-              label={<Required text={'School'} />}
-              error={errors.school}
-              helperText={errors.school?.message}
-              {...register('school')}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Course</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                label="Course"
+                id="demo-simple-select"
+                {...register('course')}
+                error={errors.course}
+                helperText={errors.course && errors.course.message}
+              >
+                {
+                  Course?.map((item) => (
+                    <MenuItem key={item} value={item}>{item}</MenuItem>
+                  ))
+                }
+              </Select>
+              {errors.course &&
+                <FormHelperText color="red" sx={{ color: 'red' }}>
+                  {errors.course.message}
+                </FormHelperText>
+              }
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">School</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                label="School"
+                id="demo-simple-select"
+                {...register('school')}
+                error={errors.school}
+                helperText={errors.school?.message}
+              >
+                {
+                  School?.map((item) => (
+                    <MenuItem key={item} value={item}>{item}</MenuItem>
+                  ))
+                }
+              </Select>
+              {errors.school &&
+                <FormHelperText color="red" sx={{ color: 'red' }}>
+                  {errors.school.message}
+                </FormHelperText>
+              }
+            </FormControl>
             <Button
               color="primary"
               fullWidth
