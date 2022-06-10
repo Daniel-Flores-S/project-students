@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
-import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -16,13 +15,22 @@ import {
   Typography,
 } from "@mui/material";
 import { getInitials } from "./utils";
-
-
+import { getUsers } from "../../store/user";
 
 export const TableCustom = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    const data = await getUsers();
+    setData(data?.data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -97,16 +105,16 @@ export const TableCustom = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {data.slice(0, limit).map((user, key) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={key}
+                  selected={selectedCustomerIds.indexOf(user?._id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedCustomerIds.indexOf(user?._id) !== -1}
+                      onChange={(event) => handleSelectOne(event, user?._id)}
                       value="true"
                     />
                   </TableCell>
@@ -117,23 +125,20 @@ export const TableCustom = ({ customers, ...rest }) => {
                         display: "flex",
                       }}
                     >
-                      <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
-                        {getInitials(customer.name)}
+                      <Avatar src={""} sx={{ mr: 2 }}>
+                        {getInitials(user?.name)}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {user?.name}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>
-                    {format(customer.createdAt, "dd/MM/yyyy")}
-                  </TableCell>
-                  
+                  <TableCell>{user?.age}</TableCell>
+                  <TableCell>{`${user?.course}`}</TableCell>
+                  <TableCell>{user?.school}</TableCell>
+                  {/* <TableCell>
+                    {format(user?.createdAt, "dd/MM/yyyy")}
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

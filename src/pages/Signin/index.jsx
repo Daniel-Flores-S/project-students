@@ -3,7 +3,7 @@
 import { Backdrop, Box, Button, CircularProgress, Container, FormHelperText, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { initialValues, Schema } from './schema';
 import { yupResolver } from "@hookform/resolvers/yup";

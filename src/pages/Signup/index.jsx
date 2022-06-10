@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import {
   Backdrop,
@@ -19,7 +19,6 @@ import { Required } from "../../components/Required";
 
 
 const Signup = () => {
-  const navigate = useNavigate();
   const [error, setError] = useState("");
   const { signup } = useAuth();
 

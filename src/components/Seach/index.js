@@ -10,61 +10,66 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
-export const Seach = (props) => (
-  <Box>
-    <Box sx={{ mt: 3 }}>
-      <Card>
-        <CardContent>
-          <Grid container>
-            <Grid item md={10} xs={12}>
-              <TextField
-                //fullWidth
-                size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon color="action" fontSize="small">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  ),
-                }}
-                placeholder="find by name"
-                variant="outlined"
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  ml: 3,
-                  right: 0,
-                  top: 0,
-                  height: "100%",
-                }}
-              >
-                Search
-              </Button>
-            </Grid>
-            <Grid item md={2} xs={12} alignItems={"end"}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
+export const Seach = (props) => {
+  let navigate = useNavigate();
+  return (
+    <Box>
+      <Box sx={{ mt: 3 }}>
+        <Card>
+          <CardContent>
+            <Grid container>
+              <Grid item md={10} xs={12}>
+                <TextField
+                  //fullWidth
+                  size="small"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon color="action" fontSize="small">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    ),
+                  }}
+                  placeholder="find by name"
+                  variant="outlined"
+                />
                 <Button
                   variant="contained"
-                  startIcon={<AddIcon />}
                   color="primary"
+                  sx={{
+                    ml: 3,
+                    right: 0,
+                    top: 0,
+                    height: "100%",
+                  }}
                 >
-                  New Student
+                  Search
                 </Button>
-              </div>
+              </Grid>
+              <Grid item md={2} xs={12} alignItems={"end"}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    color="primary"
+                    onClick={() => navigate("/student")}
+                  >
+                    New Student
+                  </Button>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
