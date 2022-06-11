@@ -6,7 +6,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   let navigate = useNavigate();
-  const [student, setStudent] = React.useState(null);
+  const [student, setStudent] = React.useState([{}]);
   const signin = async (body) => {
     try {
       const { data } = await axios.post(

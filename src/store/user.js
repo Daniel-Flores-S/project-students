@@ -26,7 +26,7 @@ export const getStudentByName = async (id) => {
   const api = getAPIClient();
 
   try {
-    const data = await api.get(`/${id}`);
+    const data = await api.get(`/search/${id}`);
     return data;
   } catch (error) {
     return error;

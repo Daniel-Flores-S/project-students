@@ -11,9 +11,30 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { getStudentByName } from "../../store/user";
+import { useState } from "react";
 
-export const Seach = (props) => {
+export const Seach = () => {
   let navigate = useNavigate();
+  const { setStudent } = useAuth();
+  const [name, setName] = useState("");
+
+  const handleChange = async (name) => {
+    try {
+      const res = await getStudentByName(name)
+
+      if (res?.statusText === "OK") {
+        setStudent(res.data);
+        console.log(res.data)
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   return (
     <Box>
       <Box sx={{ mt: 3 }}>
@@ -22,7 +43,8 @@ export const Seach = (props) => {
             <Grid container>
               <Grid item md={10} xs={12}>
                 <TextField
-                  //fullWidth
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   size="small"
                   InputProps={{
                     startAdornment: (
@@ -44,6 +66,9 @@ export const Seach = (props) => {
                     right: 0,
                     top: 0,
                     height: "100%",
+                  }}
+                  onClick={() => {
+                    handleChange(name);
                   }}
                 >
                   Search

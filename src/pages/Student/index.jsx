@@ -43,7 +43,7 @@ const Signup = () => {
         setValue("course", data?.course);
         setValue("school", data?.school);
       }
-    })();
+    })()
   }, [id]);
 
   const onSubmit = (body) => {
