@@ -33,7 +33,7 @@ export const getStudentByName = async (id) => {
   }
 };
 
-export const updatedStudentById = async (id, body) => {
+export const updatedStudentById = async (id, body) => { 
   const api = getAPIClient();
 
   try {
@@ -62,7 +62,7 @@ export const registerStudent = async (body) => {
     const data = await api.post("/", body);    
     return data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 

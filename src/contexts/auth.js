@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
         body
       );
       if (data) {
-        console.log(data);
         localStorage.setItem("user_token", data?.token);
         navigate("/home");
       }

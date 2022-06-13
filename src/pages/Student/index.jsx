@@ -17,15 +17,18 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { initialValues, Schema } from "./schema";
-import { getStudentById, updatedStudentById } from "../../store/user";
+import { getStudentById } from "../../store/user";
 import { Course, School } from "./utils.js";
 import { registerStudent } from "../../store/user";
+import { getAPIClient } from "../../data/service/axios";
 
 const Signup = () => {
   const navigate = useNavigate();
   let { id } = useParams();
+  const [course, setCourse] = React.useState([]);
+  const [school, setSchool] = React.useState([]);
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting, isSubmitted }, setValue } = useForm({
     mode: 'all',
     shouldUnregister: false,
     reValidateMode: 'onSubmit',
@@ -33,6 +36,7 @@ const Signup = () => {
     defaultValues: initialValues,
 
   });
+
   useEffect(() => {
     (async () => {
       const studentNew = await getStudentById(id);
@@ -40,31 +44,38 @@ const Signup = () => {
         const { data } = studentNew;
         setValue("name", data?.name);
         setValue("age", data?.age);
-        setValue("course", data?.course);
-        setValue("school", data?.school);
+        setCourse(data?.course);
+        setSchool(data?.school);
       }
     })()
-  }, [id]);
+  }, [id, setValue]);
 
-  const onSubmit = (body) => {
-    { id ? updateStudent(id, body) : createStudent(body) }
+  const onSubmit = async (body) => {
+    const { name, age } = body;
+    let newBody = { name, age, course, school }
+    if (id) {
+      const api = getAPIClient();
+
+      try {
+        const data = await api.patch(`/${id}`, newBody);
+       
+        if (data.statusText === "OK") {
+          navigate("/home");
+        }
+      } catch (error) {
+        return error;
+      }
+    } else { createStudent(newBody) }
   };
 
   const createStudent = async (body) => {
     const response = await registerStudent(body);
-    console.log(response);
+
     if (response.statusText === "Created") {
       navigate("/home");
     }
   }
 
-  const updateStudent = async (body) => {
-    const response = await updatedStudentById(id, body);
-    console.log(response);
-    if (response.statusText === "OK") {
-      navigate("/home");
-    }
-  }
 
   return (
     <>
@@ -135,13 +146,14 @@ const Signup = () => {
             </Box>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Course</InputLabel>
+
               <Select
-                labelId="demo-simple-select-label"
                 label="Course"
-                id="demo-simple-select"
-                {...register('course')}
-                error={errors.course}
-                helperText={errors.course && errors.course.message}
+                name="course"
+                error={isSubmitted && course === ""}
+                value={course}
+                defaultValue={course}
+                onChange={(e) => setCourse(e.target.value)}
               >
                 {
                   Course?.map((item) => (
@@ -149,22 +161,25 @@ const Signup = () => {
                   ))
                 }
               </Select>
-              {errors.course &&
+
+              {isSubmitted && course === "" &&
                 <FormHelperText color="red" sx={{ color: 'red' }}>
-                  {errors.course.message}
+                  {'Campo obrigatório'}
                 </FormHelperText>
               }
             </FormControl>
 
-            <FormControl fullWidth>
+            <FormControl >
               <InputLabel id="demo-simple-select-label">School</InputLabel>
+
+
               <Select
-                labelId="demo-simple-select-label"
+                defaultValue={school}
                 label="School"
-                id="demo-simple-select"
-                {...register('school')}
-                error={errors.school}
-                helperText={errors.school?.message}
+                name="school"
+                error={isSubmitted && school === ""}
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
               >
                 {
                   School?.map((item) => (
@@ -172,11 +187,12 @@ const Signup = () => {
                   ))
                 }
               </Select>
-              {errors.school &&
+              {isSubmitted && school === "" &&
                 <FormHelperText color="red" sx={{ color: 'red' }}>
-                  {errors.school.message}
+                  {'Campo obrigatório'}
                 </FormHelperText>
               }
+
             </FormControl>
             <Button
               color="primary"

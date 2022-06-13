@@ -26,11 +26,10 @@ export const Seach = () => {
 
       if (res?.statusText === "OK") {
         setStudent(res.data);
-        console.log(res.data)
       }
       
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 

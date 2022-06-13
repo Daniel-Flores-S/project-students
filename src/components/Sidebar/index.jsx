@@ -27,7 +27,7 @@ const Sidebar = () => {
         {
             label: 'Perfil',
             action: () => {
-                console.log('Perfil');
+               // console.log('Perfil');
             }
         },
         {
@@ -101,7 +101,7 @@ const Sidebar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        Students
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                     </Box>
